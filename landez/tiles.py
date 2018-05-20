@@ -114,6 +114,8 @@ class TilesManager(object):
 
         # Tile files extensions
         self._tile_extension = mimetypes.guess_extension(self.tile_format, strict=False)
+        if not self._tile_extension and self.tile_format == 'application/x-protobuf':
+            self._tile_extension = '.pbf'
         assert self._tile_extension, _("Unknown format %s") % self.tile_format
         if self._tile_extension == '.jpe':
             self._tile_extension = '.jpeg'
@@ -356,6 +358,8 @@ class MBTilesBuilder(TilesManager):
         # Package it!
         logger.info(_("Build MBTiles file '%s'.") % self.filepath)
         extension = self.tile_format.split("image/")[-1]
+        if self.tile_format == 'application/x-protobuf':
+            extension = 'pbf'
         disk_to_mbtiles(
             self.tmp_dir,
             self.filepath,
